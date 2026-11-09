@@ -1,0 +1,16 @@
+{
+  "title": "Secret Agent Cipher",
+  "difficulty": 2,
+  "tags": ["strings", "modulo"],
+  "guide": ["strings"],
+  "links": [
+    {"title": "Caesar cipher (Wikipedia)", "url": "https://en.wikipedia.org/wiki/Caesar_cipher"},
+    {"title": "cppreference: arithmetic operators (how % behaves)", "url": "https://en.cppreference.com/w/cpp/language/operator_arithmetic"},
+    {"title": "cppreference: std::string_view", "url": "https://en.cppreference.com/w/cpp/string/basic_string_view"}
+  ],
+  "hints": [
+    "Handle uppercase and lowercase separately: subtract the base ('a' or 'A'), shift, wrap, add the base back.",
+    "In C++ the % operator can return a negative number. Normalize with ((x % 26) + 26) % 26.",
+    "Reduce the shift modulo 26 first so huge shifts (even INT_MIN) cannot overflow."
+  ]
+}

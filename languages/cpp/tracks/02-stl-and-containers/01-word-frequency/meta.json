@@ -1,0 +1,16 @@
+{
+  "title": "Word Frequency",
+  "difficulty": 2,
+  "tags": ["unordered_map", "sorting", "strings"],
+  "guide": ["containers", "strings"],
+  "links": [
+    {"title": "cppreference: std::unordered_map", "url": "https://en.cppreference.com/w/cpp/container/unordered_map"},
+    {"title": "cppreference: std::sort", "url": "https://en.cppreference.com/w/cpp/algorithm/sort"},
+    {"title": "cppreference: lambda expressions", "url": "https://en.cppreference.com/w/cpp/language/lambda"}
+  ],
+  "hints": [
+    "Walk the text once, building the current word letter by letter; flush it into a std::unordered_map<std::string,int> when you hit a non-letter.",
+    "Copy the map into a std::vector<std::pair<std::string,int>> and std::sort it with a custom comparator.",
+    "Comparator: higher count first; on equal counts, the alphabetically smaller word first. Then resize the vector to at most k."
+  ]
+}

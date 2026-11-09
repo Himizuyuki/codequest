@@ -1,0 +1,29 @@
+name: progress
+
+# On every push to the default branch, build YOUR solution.cpp files against the
+# tests and record what passes in progress.json / PROGRESS.md.
+# (The reference solutions are checked in the codequestsolutions repo.)
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  progress:
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - run: ./learn progress --write
+      - name: Commit progress
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add progress.json PROGRESS.md
+          if git diff --cached --quiet; then
+            echo "No progress change."
+          else
+            git commit -m "Update progress [skip ci]"
+            git push
+          fi

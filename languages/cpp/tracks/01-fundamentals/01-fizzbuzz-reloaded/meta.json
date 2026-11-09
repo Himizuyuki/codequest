@@ -1,0 +1,17 @@
+{
+  "title": "FizzBuzz Reloaded",
+  "difficulty": 1,
+  "tags": ["loops", "strings"],
+  "guide": ["strings", "containers"],
+  "links": [
+    {"title": "cppreference: std::vector", "url": "https://en.cppreference.com/w/cpp/container/vector"},
+    {"title": "cppreference: std::to_string", "url": "https://en.cppreference.com/w/cpp/string/basic_string/to_string"},
+    {"title": "learncpp.com (free C++ course)", "url": "https://www.learncpp.com/"},
+    {"title": "About FizzBuzz", "url": "https://en.wikipedia.org/wiki/Fizz_buzz"}
+  ],
+  "hints": [
+    "Build the word for each number by appending to a std::string, instead of checking combinations like 'divisible by 3 and 5'.",
+    "If the word is still empty after checking 3, 5 and 7, use std::to_string(i).",
+    "std::vector::reserve(n) avoids reallocations - not required, but a good habit."
+  ]
+}

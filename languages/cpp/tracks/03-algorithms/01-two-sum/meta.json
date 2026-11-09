@@ -1,0 +1,17 @@
+{
+  "title": "Treasure Pairs (Two Sum)",
+  "difficulty": 2,
+  "tags": ["hash map", "arrays", "interview classic"],
+  "guide": ["complexity", "containers", "interview-tips"],
+  "links": [
+    {"title": "LeetCode: Two Sum (the original)", "url": "https://leetcode.com/problems/two-sum/"},
+    {"title": "cppreference: std::unordered_map::find", "url": "https://en.cppreference.com/w/cpp/container/unordered_map/find"},
+    {"title": "Big-O cheat sheet", "url": "https://www.bigocheatsheet.com/"},
+    {"title": "NeetCode roadmap", "url": "https://neetcode.io/roadmap"}
+  ],
+  "hints": [
+    "The brute force tries every pair: O(n^2). The big test will time out - you need to do better.",
+    "For each number x you need target - x. Can you remember what you have already seen?",
+    "Keep an unordered_map<int,int> from value to index. For each i, look up target - nums[i] BEFORE inserting nums[i]."
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "title": "Vending Machine (optional)",
+  "difficulty": 2,
+  "tags": ["C++17", "std::optional", "from_chars"],
+  "guide": ["strings"],
+  "links": [
+    {"title": "cppreference: std::optional", "url": "https://en.cppreference.com/w/cpp/utility/optional"},
+    {"title": "cppreference: std::from_chars", "url": "https://en.cppreference.com/w/cpp/utility/from_chars"},
+    {"title": "learncpp.com", "url": "https://www.learncpp.com/"},
+    {"title": "C++ Core Guidelines (error handling, E section)", "url": "https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#e-error-handling"}
+  ],
+  "hints": [
+    "Return std::nullopt for 'no valid result' and a plain value (return x;) for success - optional<int> converts implicitly.",
+    "std::from_chars(first, last, value) returns {ptr, ec}. The text is a complete valid int only if ec == std::errc{} AND ptr == last.",
+    "from_chars accepts a leading '-' but NOT '+', and reports overflow as std::errc::result_out_of_range - exactly the behavior the spec asks for.",
+    "safe_div: besides b == 0, INT_MIN / -1 overflows in C++ (undefined behavior!) - return nullopt for that too."
+  ]
+}

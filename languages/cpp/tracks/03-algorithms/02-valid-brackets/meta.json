@@ -1,0 +1,16 @@
+{
+  "title": "Bracket Inspector",
+  "difficulty": 2,
+  "tags": ["stack", "strings", "interview classic"],
+  "guide": ["containers", "complexity", "interview-tips"],
+  "links": [
+    {"title": "LeetCode: Valid Parentheses", "url": "https://leetcode.com/problems/valid-parentheses/"},
+    {"title": "cppreference: std::stack", "url": "https://en.cppreference.com/w/cpp/container/stack"},
+    {"title": "Stack (Wikipedia)", "url": "https://en.wikipedia.org/wiki/Stack_(abstract_data_type)"}
+  ],
+  "hints": [
+    "The most recently opened bracket must be the first one closed - that is exactly how a stack behaves (last in, first out).",
+    "Push every opening bracket. On a closing bracket the stack must be non-empty and its top must be the matching opener.",
+    "At the end the stack must be empty (otherwise some bracket was never closed). Ignore every character that is not a bracket."
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "title": "Anagram Detective",
+  "difficulty": 2,
+  "tags": ["unordered_map", "sorting", "grouping"],
+  "guide": ["containers", "strings"],
+  "links": [
+    {"title": "LeetCode: Group Anagrams", "url": "https://leetcode.com/problems/group-anagrams/"},
+    {"title": "cppreference: std::map", "url": "https://en.cppreference.com/w/cpp/container/map"},
+    {"title": "cppreference: std::sort", "url": "https://en.cppreference.com/w/cpp/algorithm/sort"}
+  ],
+  "hints": [
+    "Two words are anagrams exactly when their letters, sorted, give the same string. Use the sorted word as a grouping key.",
+    "std::map<std::string, std::vector<std::string>> from key to the words having that key.",
+    "Afterwards sort the words inside each group, then sort the groups by their first word."
+  ]
+}

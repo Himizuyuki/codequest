@@ -1,0 +1,356 @@
+#!/usr/bin/env python3
+"""learn - the CodeQuest command line.
+
+  ./learn list                 roadmap with your progress
+  ./learn next                 show the next unsolved problem
+  ./learn show 1.2             print a problem statement
+  ./learn test 1.2             build and run your solution against the tests
+  ./learn lesson 1.2           a short lesson on the ideas behind the problem
+  ./learn guide [topic]        reference notes (cheatsheets) - no topic lists them
+  ./learn hint 1.2 [n]         reveal hint n (default 1)
+  ./learn progress [--write]   re-verify everything; --write updates progress.json + PROGRESS.md
+  ./learn check-refs           (authors/CI) reference solutions (codequestsolutions repo) must pass every suite
+
+A problem can be named by code (1.2), full id (01-fundamentals/02-secret-agent-cipher)
+or any unique part of it (cipher).
+"""
+import argparse
+import datetime
+import json
+import os
+import subprocess
+import sys
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parent
+BUILD = ROOT / ".build"
+PROGRESS = ROOT / "progress.json"
+STATUS_CACHE = BUILD / "status.json"
+# Reference solutions live in a separate repo so they are not a click away while you learn.
+SOLUTIONS = Path(os.environ.get("CODEQUEST_SOLUTIONS", ROOT.parent / "codequestsolutions"))
+TIMEOUT = 10  # seconds per test run; also catches an accidental O(n^2)
+
+COLOR = sys.stdout.isatty()
+
+
+def c(code, text):
+    return f"\033[{code}m{text}\033[0m" if COLOR else text
+
+
+# --------------------------------------------------------------------------
+# Languages. Adding one means adding a languages/<name>/ tree and a runner here.
+# --------------------------------------------------------------------------
+
+def run_cpp(p, use_reference=False):
+    """Build tests.cpp against the learner's (or reference) solution and run it."""
+    sol = p.reference if use_reference else p.path / "solution.cpp"
+    BUILD.mkdir(exist_ok=True)
+    exe = BUILD / (p.id.replace("/", "__") + ("__ref" if use_reference else ""))
+    cmd = [
+        os.environ.get("CXX", "g++"), "-std=c++20", "-O1", "-Wall", "-Wextra",
+        "-I", str(p.lang_dir / "harness"),
+        f'-DSOLUTION="{sol}"',
+        str(p.path / "tests.cpp"), "-o", str(exe),
+    ]
+    build = subprocess.run(cmd, capture_output=True, text=True)
+    if build.returncode != 0:
+        return "compile_error", build.stderr
+    try:
+        run = subprocess.run([str(exe)], capture_output=True, text=True, timeout=TIMEOUT)
+    except subprocess.TimeoutExpired:
+        return "timeout", f"Timed out after {TIMEOUT}s - is there an accidental O(n^2)?"
+    out = run.stdout + run.stderr
+    if run.returncode < 0:
+        out += f"\nThe program crashed (signal {-run.returncode}) - out-of-bounds access?"
+    return ("pass" if run.returncode == 0 else "fail"), out
+
+
+RUNNERS = {"cpp": run_cpp}
+
+
+# --------------------------------------------------------------------------
+# Problem discovery
+# --------------------------------------------------------------------------
+
+class Problem:
+    def __init__(self, lang_dir, track_dir, path):
+        self.lang_dir = lang_dir
+        self.track = track_dir.name
+        self.slug = path.name
+        self.path = path
+        self.id = f"{self.track}/{self.slug}"
+        self.meta = json.loads((path / "meta.json").read_text())
+        self.code = f"{int(self.track.split('-')[0])}.{int(self.slug.split('-')[0])}"
+
+    @property
+    def title(self):
+        return self.meta["title"]
+
+    @property
+    def reference(self):
+        return SOLUTIONS / self.lang_dir.name / self.track / f"{self.slug}.cpp"
+
+
+def load(lang):
+    lang_dir = ROOT / "languages" / lang
+    if not lang_dir.is_dir():
+        sys.exit(f"No such language: {lang}")
+    tracks = []
+    for t in sorted((lang_dir / "tracks").iterdir()):
+        if not t.is_dir():
+            continue
+        info = json.loads((t / "track.json").read_text())
+        probs = [Problem(lang_dir, t, p) for p in sorted(t.iterdir()) if (p / "meta.json").exists()]
+        tracks.append((t.name, info, probs))
+    return tracks
+
+
+def all_problems(tracks):
+    return [p for _, _, probs in tracks for p in probs]
+
+
+def resolve(tracks, ref):
+    probs = all_problems(tracks)
+    exact = [p for p in probs if ref in (p.id, p.code, p.slug)]
+    if len(exact) == 1:
+        return exact[0]
+    partial = [p for p in probs if ref in p.id]
+    if len(partial) == 1:
+        return partial[0]
+    sys.exit(f"'{ref}' matches {len(partial) or 'no'} problems - try ./learn list")
+
+
+# --------------------------------------------------------------------------
+# Progress state: a local cache of your last run, plus the CI-written progress.json
+# --------------------------------------------------------------------------
+
+def read_json(path, default):
+    try:
+        return json.loads(path.read_text())
+    except (OSError, ValueError):
+        return default
+
+
+def solved_ids(lang):
+    cache = read_json(STATUS_CACHE, {}).get(lang, {})
+    committed = read_json(PROGRESS, {}).get(lang, {}).get("solved", {})
+    return {i for i, s in cache.items() if s == "pass"} | set(committed)
+
+
+def remember(lang, pid, status):
+    BUILD.mkdir(exist_ok=True)
+    data = read_json(STATUS_CACHE, {})
+    data.setdefault(lang, {})[pid] = status
+    STATUS_CACHE.write_text(json.dumps(data, indent=1))
+
+
+def stars(n):
+    return "*" * n + "." * (5 - n)
+
+
+# --------------------------------------------------------------------------
+# Commands
+# --------------------------------------------------------------------------
+
+def cmd_list(args, tracks):
+    solved = solved_ids(args.lang)
+    total = sum(len(pr) for _, _, pr in tracks)
+    print(c("1", f"CodeQuest - {args.lang}  ({len([p for p in all_problems(tracks) if p.id in solved])}/{total} solved)\n"))
+    for name, info, probs in tracks:
+        done = sum(p.id in solved for p in probs)
+        print(c("1;36", f"{name}  {info['title']}") + f"  [{done}/{len(probs)}]")
+        if not probs:
+            print(c("2", "    (coming soon)"))
+        for p in probs:
+            mark = c("32", "[x]") if p.id in solved else "[ ]"
+            print(f"  {p.code:>5}  {mark} {p.title:<28} {c('33', stars(p.meta['difficulty']))}  {c('2', ', '.join(p.meta['tags']))}")
+        print()
+
+
+def cmd_show(args, tracks):
+    p = resolve(tracks, args.problem)
+    print((p.path / "problem.md").read_text())
+    cmd_show_extras(p)
+    print(c("2", f"Edit: {(p.path / 'solution.cpp').relative_to(ROOT)}\nRun:  ./learn test {p.code}"))
+
+
+def cmd_show_extras(p):
+    links = p.meta.get("links", [])
+    guides = p.meta.get("guide", [])
+    if links:
+        print(c("1", "\nUseful links"))
+        for link in links:
+            print(f"  - {link['title']}: {link['url']}")
+    print(c("2", f"\nMini-lesson: ./learn lesson {p.code}" + (f"   Guide: ./learn guide {guides[0]}" if guides else "")))
+
+
+def cmd_lesson(args, tracks):
+    p = resolve(tracks, args.problem)
+    lesson = p.path / "lesson.md"
+    if not lesson.exists():
+        sys.exit("No lesson for this problem yet.")
+    print(lesson.read_text())
+    cmd_show_extras(p)
+
+
+def cmd_guide(args, tracks):
+    guide_dir = ROOT / "languages" / args.lang / "guide"
+    topics = sorted(f.stem for f in guide_dir.glob("*.md"))
+    if not args.topic:
+        print(c("1", "Guide topics") + "  (./learn guide <topic>)\n")
+        for t in topics:
+            first = (guide_dir / f"{t}.md").read_text().splitlines()[0].lstrip("# ")
+            print(f"  {t:<16} {first}")
+        return
+    matches = [t for t in topics if args.topic in t]
+    if len(matches) != 1:
+        sys.exit(f"'{args.topic}' matches {len(matches) or 'no'} topics - try ./learn guide")
+    print((guide_dir / f"{matches[0]}.md").read_text())
+
+
+def cmd_next(args, tracks):
+    solved = solved_ids(args.lang)
+    for p in all_problems(tracks):
+        if p.id not in solved:
+            args.problem = p.id
+            return cmd_show(args, tracks)
+    print("Everything available is solved. Time to add more problems!")
+
+
+def cmd_test(args, tracks):
+    p = resolve(tracks, args.problem)
+    print(c("1", f"{p.code}  {p.title}\n"))
+    status, out = RUNNERS[args.lang](p)
+    remember(args.lang, p.id, status)
+    print(out)
+    if status == "pass":
+        print(c("1;32", "Solved! Run ./learn next for the next challenge."))
+        return 0
+    label = {"compile_error": "Does not compile yet.", "timeout": "Too slow.", "fail": "Not there yet."}[status]
+    print(c("1;31", label) + f"  Try ./learn hint {p.code} if you are stuck.")
+    return 1
+
+
+def cmd_hint(args, tracks):
+    p = resolve(tracks, args.problem)
+    hints = p.meta.get("hints", [])
+    if not hints:
+        sys.exit("No hints for this problem.")
+    n = min(max(args.n, 1), len(hints))
+    print(f"Hint {n}/{len(hints)}: {hints[n - 1]}")
+
+
+def cmd_progress(args, tracks):
+    old = read_json(PROGRESS, {})
+    today = datetime.date.today().isoformat()
+    solved = {}
+    failing = []
+    for p in all_problems(tracks):
+        status, _ = RUNNERS[args.lang](p)
+        remember(args.lang, p.id, status)
+        if status == "pass":
+            prev = old.get(args.lang, {}).get("solved", {}).get(p.id, {})
+            solved[p.id] = {"first_solved": prev.get("first_solved", today)}
+        else:
+            failing.append(p.id)
+    total = len(all_problems(tracks))
+    print(f"{len(solved)}/{total} solved")
+    if args.write:
+        old[args.lang] = {"solved": solved, "total": total}
+        PROGRESS.write_text(json.dumps(old, indent=2, sort_keys=True) + "\n")
+        (ROOT / "PROGRESS.md").write_text(render_progress_md(args.lang, tracks, solved))
+        print("wrote progress.json and PROGRESS.md")
+
+
+def streak(dates):
+    days = sorted({datetime.date.fromisoformat(d) for d in dates})
+    if not days:
+        return 0
+    run = 1
+    for a, b in zip(reversed(days[:-1]), reversed(days)):
+        if (b - a).days != 1:
+            break
+        run += 1
+    return run
+
+
+def render_progress_md(lang, tracks, solved):
+    total = len(all_problems(tracks))
+    lines = [
+        f"# Progress - {lang}",
+        "",
+        f"**{len(solved)} / {total} solved**  -  streak: {streak(v['first_solved'] for v in solved.values())} day(s)",
+        "",
+        "_Generated by CI from the test suites - only problems whose tests pass are counted._",
+        "",
+    ]
+    for name, info, probs in tracks:
+        done = sum(p.id in solved for p in probs)
+        bar = "#" * done + "-" * (len(probs) - done)
+        lines += [f"## {name} - {info['title']}  `[{bar}]` {done}/{len(probs)}", ""]
+        if probs:
+            lines += ["| | Problem | Difficulty | Solved on |", "|---|---|---|---|"]
+            for p in probs:
+                s = solved.get(p.id)
+                lines.append(f"| {'x' if s else ' '} | {p.title} | {stars(p.meta['difficulty'])} | {s['first_solved'] if s else ''} |")
+            lines.append("")
+        else:
+            lines += ["_coming soon_", ""]
+    return "\n".join(lines)
+
+
+def cmd_check_refs(args, tracks):
+    global SOLUTIONS
+    if args.solutions:
+        SOLUTIONS = Path(args.solutions).resolve()
+    if not SOLUTIONS.is_dir():
+        sys.exit(f"Solutions repo not found at {SOLUTIONS}. Clone codequestsolutions next to this repo or pass --solutions.")
+    bad = 0
+    for p in all_problems(tracks):
+        if not p.reference.exists():
+            print(f"MISSING  {p.id}: no reference solution at {p.reference}")
+            bad += 1
+            continue
+        status, out = RUNNERS[args.lang](p, use_reference=True)
+        print(f"{'ok     ' if status == 'pass' else 'FAILED '} {p.id}")
+        if status != "pass":
+            print(out)
+            bad += 1
+        if args.starters:
+            status, _ = RUNNERS[args.lang](p)
+            if status == "pass":
+                print(f"WARNING  {p.id}: the starter already passes - tests too weak?")
+                bad += 1
+    return 1 if bad else 0
+
+
+def main():
+    ap = argparse.ArgumentParser(description="CodeQuest", formatter_class=argparse.RawDescriptionHelpFormatter, epilog=__doc__)
+    ap.add_argument("--lang", default="cpp", choices=sorted(RUNNERS))
+    sub = ap.add_subparsers(dest="cmd", required=True)
+    sub.add_parser("list")
+    sub.add_parser("next")
+    for name in ("show", "test"):
+        sub.add_parser(name).add_argument("problem")
+    h = sub.add_parser("hint")
+    h.add_argument("problem")
+    h.add_argument("n", nargs="?", type=int, default=1)
+    sub.add_parser("progress").add_argument("--write", action="store_true")
+    for name in ("lesson",):
+        sub.add_parser(name).add_argument("problem")
+    sub.add_parser("guide").add_argument("topic", nargs="?")
+    cr = sub.add_parser("check-refs")
+    cr.add_argument("--starters", action="store_true", help="also fail if a starter already passes")
+    cr.add_argument("--solutions", help="path to the codequestsolutions checkout")
+    args = ap.parse_args()
+
+    tracks = load(args.lang)
+    handler = {
+        "list": cmd_list, "next": cmd_next, "show": cmd_show, "test": cmd_test,
+        "lesson": cmd_lesson, "guide": cmd_guide, "hint": cmd_hint, "progress": cmd_progress, "check-refs": cmd_check_refs,
+    }[args.cmd]
+    sys.exit(handler(args, tracks) or 0)
+
+
+if __name__ == "__main__":
+    main()

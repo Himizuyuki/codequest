@@ -1,0 +1,16 @@
+{
+  "title": "Time-Travelling Clock (Roman Numerals)",
+  "difficulty": 2,
+  "tags": ["strings", "tables", "greedy"],
+  "guide": ["strings"],
+  "links": [
+    {"title": "Roman numerals (Wikipedia)", "url": "https://en.wikipedia.org/wiki/Roman_numerals"},
+    {"title": "cppreference: std::array", "url": "https://en.cppreference.com/w/cpp/container/array"},
+    {"title": "cppreference: range-based for", "url": "https://en.cppreference.com/w/cpp/language/range-for"}
+  ],
+  "hints": [
+    "Make a table of (value, symbol) pairs from largest to smallest INCLUDING the subtractive ones: 900 CM, 400 CD, 90 XC, 40 XL, 9 IX, 4 IV.",
+    "to_roman: for each entry, while n >= value, append the symbol and subtract the value.",
+    "from_roman: scan left to right; if a symbol's value is smaller than the next symbol's value, subtract it, otherwise add it."
+  ]
+}
