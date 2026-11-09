@@ -9,6 +9,7 @@
   ./learn guide [topic]        reference notes (cheatsheets) - no topic lists them
   ./learn hint 1.2 [n]         reveal hint n (default 1)
   ./learn progress [--write]   re-verify everything; --write updates progress.json + PROGRESS.md
+  ./learn sync [--no-push]     progress --write, then commit your solutions + progress and push (local "CI")
   ./learn check-refs           (authors/CI) reference solutions (codequestsolutions repo) must pass every suite
 
 A problem can be named by code (1.2), full id (01-fundamentals/02-secret-agent-cipher)
@@ -262,6 +263,50 @@ def cmd_progress(args, tracks):
         print("wrote progress.json and PROGRESS.md")
 
 
+def git(*cmd, push_auth=False, capture=False):
+    """Run git in the repo. With push_auth, use $GITHUB_PERSONAL_ACCESS_TOKEN for https
+    remotes (handed to git for this one command; never stored)."""
+    prefix = ["git"]
+    if push_auth and os.environ.get("GITHUB_PERSONAL_ACCESS_TOKEN"):
+        helper = "!f(){ echo username=x-access-token; echo password=$GITHUB_PERSONAL_ACCESS_TOKEN; }; f"
+        prefix += ["-c", f"credential.helper={helper}"]
+    return subprocess.run(prefix + list(cmd), cwd=ROOT, text=True, capture_output=capture)
+
+
+def cmd_sync(args, tracks):
+    """Local stand-in for the CI workflow: verify, record progress, commit, push."""
+    if git("rev-parse", "--git-dir", capture=True).returncode != 0:
+        sys.exit("This is not a git repository.")
+    before = set(read_json(PROGRESS, {}).get(args.lang, {}).get("solved", {}))
+    args.write = True
+    cmd_progress(args, tracks)
+    solved = read_json(PROGRESS, {}).get(args.lang, {}).get("solved", {})
+    total = len(all_problems(tracks))
+    titles = {p.id: p.title for p in all_problems(tracks)}
+
+    git("add", "--", "progress.json", "PROGRESS.md", f"languages/{args.lang}/tracks/*/*/solution.cpp")
+    if git("diff", "--cached", "--quiet").returncode == 0:
+        print("Nothing new to commit.")
+        return 0
+
+    new = sorted(set(solved) - before)
+    subject = f"Progress: {len(solved)}/{total} solved"
+    body = "".join(f"\n- solved: {titles[i]}" for i in new)
+    commit = git("commit", "-m", subject + ("\n" + body if body else ""), capture=True)
+    print(commit.stdout.strip() or commit.stderr.strip())
+    if commit.returncode != 0:
+        return 1
+    if args.no_push:
+        print("Committed locally (--no-push).")
+        return 0
+    push = git("push", "origin", "HEAD", push_auth=True, capture=True)
+    print((push.stdout + push.stderr).strip())
+    if push.returncode != 0:
+        print(c("1;31", "Push failed.") + " If the remote has new commits, run: git pull --rebase, then ./learn sync again.")
+        return 1
+    return 0
+
+
 def streak(dates):
     days = sorted({datetime.date.fromisoformat(d) for d in dates})
     if not days:
@@ -336,6 +381,7 @@ def main():
     h.add_argument("problem")
     h.add_argument("n", nargs="?", type=int, default=1)
     sub.add_parser("progress").add_argument("--write", action="store_true")
+    sub.add_parser("sync").add_argument("--no-push", action="store_true", help="commit but do not push")
     for name in ("lesson",):
         sub.add_parser(name).add_argument("problem")
     sub.add_parser("guide").add_argument("topic", nargs="?")
@@ -347,7 +393,7 @@ def main():
     tracks = load(args.lang)
     handler = {
         "list": cmd_list, "next": cmd_next, "show": cmd_show, "test": cmd_test,
-        "lesson": cmd_lesson, "guide": cmd_guide, "hint": cmd_hint, "progress": cmd_progress, "check-refs": cmd_check_refs,
+        "lesson": cmd_lesson, "guide": cmd_guide, "hint": cmd_hint, "progress": cmd_progress, "sync": cmd_sync, "check-refs": cmd_check_refs,
     }[args.cmd]
     sys.exit(handler(args, tracks) or 0)
 

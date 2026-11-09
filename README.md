@@ -19,6 +19,7 @@ You need `g++` 12+ (or any C++20 compiler; `CXX=clang++ ./learn ...` to switch) 
 ./learn hint 1.1          # stuck? hints one at a time (./learn hint 1.1 2)
 ./learn guide             # reference notes: complexity, containers, strings, interview tips...
 ./learn progress          # re-verify everything
+./learn sync              # log it: verify, write progress files, commit your solutions, push
 ```
 
 The loop: **`next` -> read the lesson -> edit `solution.cpp` -> `test` -> commit and push.**
@@ -52,6 +53,13 @@ Push to GitHub and the **progress** workflow runs on GitHub's servers (nothing t
 on your machine): it builds your `solution.cpp` files against the tests, then commits
 `progress.json` and `PROGRESS.md`. Only problems whose tests pass count, and the date you first
 solved each one is kept. Watch it in the repo's **Actions** tab. Details: `./learn guide how-ci-works`.
+
+**No CI available?** `./learn sync` does the same job from your own machine: it runs
+`progress --write`, commits your `solution.cpp` files plus `progress.json`/`PROGRESS.md`
+(message: "Progress: N/8 solved" and what is new), and pushes. Use `--no-push` to commit only.
+It pushes over HTTPS with `$GITHUB_PERSONAL_ACCESS_TOKEN` if that is set (never stored), else with
+your normal git credentials. If the push is rejected, run `git pull --rebase` and sync again.
+If CI is enabled too, the two agree - the first-solved dates are preserved.
 
 If the workflow cannot push, enable it under Settings -> Actions -> General -> Workflow
 permissions -> "Read and write permissions".
