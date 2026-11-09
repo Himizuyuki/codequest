@@ -1,0 +1,17 @@
+{
+  "title": "Longest Streak (Sliding Window)",
+  "difficulty": 3,
+  "tags": ["sliding window", "strings", "hash map", "interview classic"],
+  "guide": ["patterns", "strings", "complexity"],
+  "links": [
+    {"title": "LeetCode: Longest Substring Without Repeating Characters", "url": "https://leetcode.com/problems/longest-substring-without-repeating-characters/"},
+    {"title": "NeetCode roadmap (sliding window)", "url": "https://neetcode.io/roadmap"},
+    {"title": "cppreference: std::array", "url": "https://en.cppreference.com/w/cpp/container/array"}
+  ],
+  "hints": [
+    "Brute force: check every substring for duplicates - O(n^3) naively, O(n^2) with a set. Think about a window [start, i] that you grow to the right and shrink from the left only when needed.",
+    "Remember the last index where each character was seen. When s[i] was seen at an index >= start, the window must start right after that occurrence.",
+    "Never move start backwards: start = max(start, last[c] + 1). The trap is the input \"abba\".",
+    "Characters are bytes: std::array<int, 256> works as a map from character to its last index. Index it with static_cast<unsigned char>(ch)."
+  ]
+}

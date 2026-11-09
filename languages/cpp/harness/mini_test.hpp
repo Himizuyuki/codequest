@@ -77,7 +77,19 @@ std::string show(const T& v) {
             throw mt::Failure{"line " + std::to_string(__LINE__) + ": CHECK(" #cond ") failed"}; \
     } while (0)
 
-#define CHECK_EQ(actual, expected)                                                     \
+#define CHECK_THROWS(expr)                                                             \
+    do {                                                                               \
+        bool mt_threw = false;                                                         \
+        try {                                                                          \
+            (void)(expr);                                                              \
+        } catch (...) {                                                                \
+            mt_threw = true;                                                           \
+        }                                                                              \
+        if (!mt_threw)                                                                 \
+            throw mt::Failure{"line " + std::to_string(__LINE__) + ": " #expr " should have thrown"}; \
+    } while (0)
+
+#define CHECK_EQ(actual, expected)                                                   \
     do {                                                                               \
         const auto& mt_a = (actual);                                                   \
         const auto& mt_e = (expected);                                                 \

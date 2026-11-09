@@ -1,0 +1,18 @@
+{
+  "title": "Running Median",
+  "difficulty": 3,
+  "tags": ["priority_queue", "heaps", "class design", "interview classic"],
+  "guide": ["containers", "complexity", "interview-tips"],
+  "links": [
+    {"title": "LeetCode: Find Median from Data Stream", "url": "https://leetcode.com/problems/find-median-from-data-stream/"},
+    {"title": "cppreference: std::priority_queue", "url": "https://en.cppreference.com/w/cpp/container/priority_queue"},
+    {"title": "cppreference: std::greater", "url": "https://en.cppreference.com/w/cpp/utility/functional/greater"},
+    {"title": "Median (Wikipedia)", "url": "https://en.wikipedia.org/wiki/Median"}
+  ],
+  "hints": [
+    "Keeping a sorted vector and inserting each number costs O(n) per add. Can you do better by only caring about the MIDDLE?",
+    "Split the numbers into a lower half and an upper half. You only need the largest of the lower half and the smallest of the upper half.",
+    "Use a max-heap for the lower half (std::priority_queue<int>) and a min-heap for the upper half (std::priority_queue<int, std::vector<int>, std::greater<>>).",
+    "After every add, rebalance so the heap sizes differ by at most 1 (and let the lower half be the bigger one when the count is odd)."
+  ]
+}

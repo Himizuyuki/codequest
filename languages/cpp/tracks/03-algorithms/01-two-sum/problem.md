@@ -24,4 +24,4 @@ std::pair<int, int> two_sum(const std::vector<int>& nums, int target);
 
 - Exactly one valid pair exists. The same element cannot be used twice.
 - Values can be negative.
-- Target: O(n) time. One of the tests has 200,000 elements and will time out an O(n^2) approach.
+- Target: O(n) time. One of the tests has 1,000,000 elements and will time out an O(n^2) approach.

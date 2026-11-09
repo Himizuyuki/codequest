@@ -34,8 +34,8 @@ TEST(unordered_input) {
 }
 
 TEST(large_input_needs_linear_time) {
-    std::vector<int> nums(200000);
-    for (int i = 0; i < 200000; ++i) nums[i] = i * 2;
+    std::vector<int> nums(1000000);
+    for (int i = 0; i < 1000000; ++i) nums[i] = i * 2;
     // Only the last two elements add up to this.
-    CHECK_EQ(two_sum(nums, 2 * 199998 + 2 * 199999), (P{199998, 199999}));
+    CHECK_EQ(two_sum(nums, 2 * 999998 + 2 * 999999), (P{999998, 999999}));
 }

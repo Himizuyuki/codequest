@@ -1,0 +1,18 @@
+{
+  "title": "Arcade Leaderboard",
+  "difficulty": 2,
+  "tags": ["sorting", "comparators", "struct", "std::tie"],
+  "guide": ["containers"],
+  "links": [
+    {"title": "cppreference: std::sort", "url": "https://en.cppreference.com/w/cpp/algorithm/sort"},
+    {"title": "cppreference: std::tie", "url": "https://en.cppreference.com/w/cpp/utility/tuple/tie"},
+    {"title": "cppreference: Compare (strict weak ordering)", "url": "https://en.cppreference.com/w/cpp/named_req/Compare"},
+    {"title": "cppreference: lambda expressions", "url": "https://en.cppreference.com/w/cpp/language/lambda"}
+  ],
+  "hints": [
+    "std::sort(begin, end, comp): comp(a, b) must return true when a should come BEFORE b.",
+    "Compare field by field: if the scores differ, the higher score wins; only if they are equal look at the time; only if those are equal look at the name.",
+    "Shortcut: std::tie(x, y, z) builds a tuple of references that compares lexicographically. To make 'higher score first' use the same trick with the arguments swapped for that field: std::tie(b.score, a.time_ms, a.name) < std::tie(a.score, b.time_ms, b.name).",
+    "Never return true for comp(a, a). Using <= in a comparator is a classic bug that can crash std::sort."
+  ]
+}

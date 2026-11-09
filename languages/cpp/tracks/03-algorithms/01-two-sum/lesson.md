@@ -8,7 +8,7 @@ for (int i = 0; i < n; ++i)
         if (nums[i] + nums[j] == target) return {i, j};
 ```
 Two nested loops over n elements = **O(n^2)** time, O(1) space. Fine for n = 1000; far too slow
-for n = 200,000 (that is 20 billion checks). Always state this first in an interview.
+for n = 1,000,000 (that is 500 billion checks). Always state this first in an interview.
 
 ## Ask: what work is repeated?
 For each `nums[i]`, the inner loop *searches* for `target - nums[i]`. A search over an unsorted

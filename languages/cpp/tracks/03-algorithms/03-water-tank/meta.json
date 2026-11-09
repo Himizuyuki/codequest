@@ -1,0 +1,17 @@
+{
+  "title": "Water Tank (Two Pointers)",
+  "difficulty": 3,
+  "tags": ["two pointers", "greedy", "arrays", "interview classic"],
+  "guide": ["patterns", "complexity", "interview-tips"],
+  "links": [
+    {"title": "LeetCode: Container With Most Water", "url": "https://leetcode.com/problems/container-with-most-water/"},
+    {"title": "NeetCode roadmap (two pointers)", "url": "https://neetcode.io/roadmap"},
+    {"title": "cppreference: std::min / std::max", "url": "https://en.cppreference.com/w/cpp/algorithm/min"}
+  ],
+  "hints": [
+    "Brute force: try every pair of walls, O(n^2). The 200,000-wall test will time out.",
+    "Start with the two outermost walls - that is the widest tank. Now think: which wall should you move inward to have any chance of a bigger tank?",
+    "The water level is limited by the SHORTER wall. Moving the taller wall inward can only reduce the width and cannot raise the limit, so always move the shorter one.",
+    "Use long long for the area: min height * width can exceed what an int holds."
+  ]
+}

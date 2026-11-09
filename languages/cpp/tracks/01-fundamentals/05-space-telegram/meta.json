@@ -1,0 +1,16 @@
+{
+  "title": "Space Telegram (Run-Length Encoding)",
+  "difficulty": 2,
+  "tags": ["strings", "parsing", "compression"],
+  "guide": ["strings"],
+  "links": [
+    {"title": "Run-length encoding (Wikipedia)", "url": "https://en.wikipedia.org/wiki/Run-length_encoding"},
+    {"title": "cppreference: std::to_string", "url": "https://en.cppreference.com/w/cpp/string/basic_string/to_string"},
+    {"title": "cppreference: std::string::append", "url": "https://en.cppreference.com/w/cpp/string/basic_string/append"}
+  ],
+  "hints": [
+    "Encoding: walk the string with an index i; find where the run of equal characters ends (j), emit s[i] and the run length (j - i), then continue from j.",
+    "Decoding: read one letter, then read all the digits that follow and build the number with n = n * 10 + (ch - '0').",
+    "Use std::string::append(count, ch) to add a character count times."
+  ]
+}

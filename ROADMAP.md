@@ -27,8 +27,8 @@ Types and operators, control flow, functions, strings, arrays/vectors, reference
 - [x] 1.1 FizzBuzz Reloaded - loops, `%`, building strings
 - [x] 1.2 Secret Agent Cipher - `char` arithmetic, modulo with negatives, overflow
 - [x] 1.3 Time-Travelling Clock - tables, greedy, parsing (Roman numerals)
-- [ ] Palindrome Detective - two indices, `isalnum`/`tolower`
-- [ ] Space Telegram - run-length encoding / decoding
+- [x] 1.4 Palindrome Detective - two indices, `isalnum`/`tolower`, one-deletion variant
+- [x] 1.5 Space Telegram - run-length encoding / decoding, parsing numbers
 - [ ] Digit Alchemist - digits of a number, sums, reversing, overflow-safe
 - [ ] Prime Sieve - nested loops, `vector<bool>`, sieve of Eratosthenes
 - [ ] Snake in a Box - 2D vectors, spiral traversal
@@ -39,9 +39,9 @@ Types and operators, control flow, functions, strings, arrays/vectors, reference
 `vector`, `deque`, `stack`/`queue`, `map`/`unordered_map`, `set`, `priority_queue`, `<algorithm>`, lambdas, iterators.
 - [x] 2.1 Word Frequency - `unordered_map`, sorting with a lambda
 - [x] 2.2 Anagram Detective - grouping by a canonical key
-- [ ] Leaderboard - `std::map`, custom comparators, `lower_bound`
+- [x] 2.3 Arcade Leaderboard - multi-key sort, `std::tie`, strict weak ordering
 - [ ] Unique Visitors - `set`/`unordered_set`, set operations
-- [ ] Running Median - two heaps (`priority_queue`)
+- [x] 2.4 Running Median - two heaps (`priority_queue`), a small class
 - [ ] Hot Potato - `deque`/`queue` simulation (Josephus)
 - [ ] Iterator Pipeline - `std::transform`, `std::remove_if` + erase, `accumulate`
 - [ ] Inventory Merge - nested maps, structured bindings
@@ -52,8 +52,10 @@ Types and operators, control flow, functions, strings, arrays/vectors, reference
 Each pattern: one easy intro, then harder variants.
 - [x] 3.1 Treasure Pairs (Two Sum) - hash map
 - [x] 3.2 Bracket Inspector - stack
-- [ ] Two pointers: sorted-array dedupe, container with most water, three sum
-- [ ] Sliding window: longest substring without repeats, max sum subarray of size k
+- [x] 3.3 Water Tank - two pointers (container with most water)
+- [x] 3.4 Longest Streak - sliding window (longest substring without repeats)
+- [ ] More two pointers: sorted-array dedupe, three sum
+- [ ] More sliding window: max sum subarray of size k, minimum window substring
 - [ ] Prefix sums: subarray sum equals k, range-sum queries
 - [ ] Binary search: first bad version, search in rotated array, square root
 - [ ] Sorting & intervals: merge intervals, meeting rooms
@@ -103,8 +105,8 @@ Each pattern: one easy intro, then harder variants.
 - [ ] Behavioral prep notes: STAR stories template
 
 ## Guide notes (`./learn guide`)
-- [x] resources (links), complexity, containers, strings, interview-tips, how-ci-works
-- [ ] algorithms-patterns (how to recognize each pattern), templates, memory-model, concurrency
+- [x] resources (links), complexity, containers, strings, interview-tips, how-ci-works, patterns
+- [ ] templates, memory-model, concurrency
 
 ## Open questions
 - Reorder or drop anything? Anything missing for the roles you apply to?
