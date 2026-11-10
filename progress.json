@@ -3,6 +3,9 @@
     "solved": {
       "01-fundamentals/01-fizzbuzz-reloaded": {
         "first_solved": "2026-11-10"
+      },
+      "01-fundamentals/02-secret-agent-cipher": {
+        "first_solved": "2026-11-10"
       }
     },
     "total": 39
