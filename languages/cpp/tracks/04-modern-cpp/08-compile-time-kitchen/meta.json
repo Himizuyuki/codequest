@@ -1,0 +1,18 @@
+{
+  "title": "Compile-Time Kitchen (constexpr)",
+  "difficulty": 3,
+  "tags": ["C++20", "constexpr", "consteval", "std::array", "templates"],
+  "guide": ["cpp20"],
+  "links": [
+    {"title": "cppreference: constexpr specifier", "url": "https://en.cppreference.com/w/cpp/language/constexpr"},
+    {"title": "cppreference: consteval (C++20)", "url": "https://en.cppreference.com/w/cpp/language/consteval"},
+    {"title": "cppreference: constinit (C++20)", "url": "https://en.cppreference.com/w/cpp/language/constinit"},
+    {"title": "Compiler Explorer (see that the result is a constant)", "url": "https://godbolt.org/"}
+  ],
+  "hints": [
+    "A constexpr function is ordinary code: loops, local variables and if are all allowed since C++14.",
+    "fib: iterate with two long long variables. The naive recursion fib(n-1) + fib(n-2) takes billions of steps for n = 50 and the compiler gives up ('constexpr evaluation operation count exceeds limit').",
+    "is_prime: trial division while d * d <= n; do the multiplication in long long, because overflow inside a constant expression is a compile ERROR, not silent UB.",
+    "first_primes<N>: declare std::array<int, N> out{}; and fill it with a counter while walking 2, 3, 4, ..."
+  ]
+}

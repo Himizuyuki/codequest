@@ -1,0 +1,15 @@
+{
+  "title": "Prime Sieve",
+  "difficulty": 2,
+  "tags": ["loops", "vector<bool>", "math"],
+  "guide": ["complexity", "containers"],
+  "links": [
+    {"title": "Sieve of Eratosthenes (Wikipedia)", "url": "https://en.wikipedia.org/wiki/Sieve_of_Eratosthenes"},
+    {"title": "cppreference: std::vector<bool>", "url": "https://en.cppreference.com/w/cpp/container/vector_bool"}
+  ],
+  "hints": [
+    "Testing every number by trial division works but is slow. Instead, cross out the multiples of each prime you find.",
+    "Keep a std::vector<bool> composite(n + 1). For each i from 2: if it is not crossed out it is prime; cross out i*i, i*i+i, i*i+2i, ...",
+    "i * i overflows int once i passes 46340. Use long long for the inner loop variable."
+  ]
+}

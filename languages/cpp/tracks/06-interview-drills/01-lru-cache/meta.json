@@ -1,0 +1,17 @@
+{
+  "title": "LRU Cache",
+  "difficulty": 4,
+  "tags": ["design", "std::list", "unordered_map", "iterators", "interview classic"],
+  "guide": ["interview-tips", "containers", "complexity"],
+  "links": [
+    {"title": "LeetCode: LRU Cache", "url": "https://leetcode.com/problems/lru-cache/"},
+    {"title": "cppreference: std::list::splice", "url": "https://en.cppreference.com/w/cpp/container/list/splice"},
+    {"title": "Cache replacement policies: LRU (Wikipedia)", "url": "https://en.wikipedia.org/wiki/Cache_replacement_policies#LRU"}
+  ],
+  "hints": [
+    "You need two things in O(1): find a key, and know the order of use. One container cannot do both - combine two.",
+    "std::list<std::pair<int,int>> keeps (key, value) in order of use, most recent at the front. std::unordered_map<int, list::iterator> finds a key's node.",
+    "List iterators stay valid when OTHER elements are inserted or erased - that is why a list (not a vector or deque) works here.",
+    "To mark a node as most recently used: order.splice(order.begin(), order, it); - it relinks the node in O(1) without copying. To evict: take order.back(), erase its key from the map, pop_back()."
+  ]
+}

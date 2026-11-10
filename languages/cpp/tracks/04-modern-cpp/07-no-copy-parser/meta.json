@@ -1,0 +1,18 @@
+{
+  "title": "No-Copy Parser (span & string_view)",
+  "difficulty": 3,
+  "tags": ["C++20", "std::span", "std::string_view", "views", "dangling"],
+  "guide": ["cpp20", "strings"],
+  "links": [
+    {"title": "cppreference: std::span", "url": "https://en.cppreference.com/w/cpp/container/span"},
+    {"title": "cppreference: std::string_view", "url": "https://en.cppreference.com/w/cpp/string/basic_string_view"},
+    {"title": "cppreference: string_view::starts_with (C++20)", "url": "https://en.cppreference.com/w/cpp/string/basic_string_view/starts_with"},
+    {"title": "C++ Core Guidelines F.24: use span<T> for a half-open sequence", "url": "https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#f24-use-a-spant-or-a-span_pt-to-designate-a-half-open-sequence"}
+  ],
+  "hints": [
+    "A view is (pointer, length). Shrinking it is free: s.remove_prefix(1), s.remove_suffix(1), s.substr(pos, len) on a string_view; values.subspan(offset, count) on a span.",
+    "trim: while the view is non-empty and its front() is a space or tab, remove_prefix(1); same for back() with remove_suffix(1).",
+    "split: find(sep, start) in a loop; push s.substr(start, pos - start); when find returns npos push the rest and stop. An empty input gives one empty field.",
+    "longest_positive_run: track the start and length of the current run and of the best run, then return values.subspan(best_start, best_len)."
+  ]
+}

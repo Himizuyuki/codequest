@@ -1,0 +1,18 @@
+{
+  "title": "Shape Zoo (variant & visit)",
+  "difficulty": 3,
+  "tags": ["C++17", "std::variant", "std::visit", "overloaded", "C++20 numbers"],
+  "guide": ["cpp20"],
+  "links": [
+    {"title": "cppreference: std::variant", "url": "https://en.cppreference.com/w/cpp/utility/variant"},
+    {"title": "cppreference: std::visit (with the overloaded example)", "url": "https://en.cppreference.com/w/cpp/utility/variant/visit"},
+    {"title": "cppreference: <numbers> (std::numbers::pi)", "url": "https://en.cppreference.com/w/cpp/numeric/constants"},
+    {"title": "Heron's formula (Wikipedia)", "url": "https://en.wikipedia.org/wiki/Heron%27s_formula"}
+  ],
+  "hints": [
+    "std::visit(visitor, shape) calls the visitor with whatever alternative the variant currently holds.",
+    "The 'overloaded' helper builds a visitor from several lambdas: template <class... Ts> struct overloaded : Ts... { using Ts::operator()...; };",
+    "Then: std::visit(overloaded{ [](const Circle& c) { ... }, [](const Rect& r) { ... }, [](const Triangle& t) { ... } }, shape). All lambdas must return the same type.",
+    "Triangle area (Heron): p = (a + b + c) / 2, area = sqrt(p (p-a) (p-b) (p-c)). Circle: std::numbers::pi * r * r. Counting circles: std::holds_alternative<Circle>(shape)."
+  ]
+}

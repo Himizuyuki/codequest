@@ -1,0 +1,18 @@
+{
+  "title": "Bookshelf Search (Binary Search)",
+  "difficulty": 3,
+  "tags": ["binary search", "lower_bound", "overflow", "interview classic"],
+  "guide": ["patterns", "complexity"],
+  "links": [
+    {"title": "cppreference: std::lower_bound", "url": "https://en.cppreference.com/w/cpp/algorithm/lower_bound"},
+    {"title": "cppreference: std::midpoint (C++20)", "url": "https://en.cppreference.com/w/cpp/numeric/midpoint"},
+    {"title": "LeetCode: Binary Search", "url": "https://leetcode.com/problems/binary-search/"},
+    {"title": "LeetCode: Sqrt(x)", "url": "https://leetcode.com/problems/sqrtx/"}
+  ],
+  "hints": [
+    "Keep a half-open range [lo, hi) that must contain the answer. Look at the middle; throw away the half that cannot contain it.",
+    "lower_bound_index: if sorted[mid] < x the answer is right of mid (lo = mid + 1), otherwise it is mid or left of it (hi = mid).",
+    "count_equal = (first index with value > x) - (first index with value >= x). std::lower_bound / std::upper_bound do exactly this.",
+    "isqrt: binary search the answer r. Do not compute mid * mid (it overflows for big n); compare mid <= n / mid instead."
+  ]
+}

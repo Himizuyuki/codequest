@@ -1,0 +1,16 @@
+{
+  "title": "Meeting Merger (Intervals)",
+  "difficulty": 2,
+  "tags": ["sorting", "intervals", "sweep", "interview classic"],
+  "guide": ["patterns", "containers"],
+  "links": [
+    {"title": "LeetCode: Merge Intervals", "url": "https://leetcode.com/problems/merge-intervals/"},
+    {"title": "cppreference: std::pair comparison", "url": "https://en.cppreference.com/w/cpp/utility/pair/operator_cmp"}
+  ],
+  "hints": [
+    "Sort the intervals by start. After that, an interval can only overlap the one you are currently building.",
+    "std::pair already compares by first, then second - std::sort needs no comparator here.",
+    "Walk the sorted list: if the next start <= current end, extend the current end with max(); otherwise push a new interval.",
+    "Use max when extending: {1,10} followed by {2,3} must stay {1,10}."
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "title": "Parallel Sum (jthread & atomic)",
+  "difficulty": 4,
+  "tags": ["C++20", "std::jthread", "std::atomic", "data races", "concurrency"],
+  "guide": ["cpp20"],
+  "links": [
+    {"title": "cppreference: std::jthread (C++20)", "url": "https://en.cppreference.com/w/cpp/thread/jthread"},
+    {"title": "cppreference: std::atomic", "url": "https://en.cppreference.com/w/cpp/atomic/atomic"},
+    {"title": "cppreference: std::mutex and std::lock_guard", "url": "https://en.cppreference.com/w/cpp/thread/lock_guard"},
+    {"title": "C++ Core Guidelines CP.2: avoid data races", "url": "https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#cp2-avoid-data-races"}
+  ],
+  "hints": [
+    "SafeCounter: make the member a std::atomic<long long>; ++ on it (or fetch_add(1)) is then one indivisible step. A plain long long loses increments when two threads collide.",
+    "parallel_sum: split the vector into `threads` chunks. Give each thread its OWN slot in a std::vector<long long> partial(threads) - no sharing, no lock needed.",
+    "Create the std::jthread objects inside a block { ... }: their destructors join at the closing brace, so all partial sums are ready after it.",
+    "Chunk bounds: chunk = (n + threads - 1) / threads; begin = min(n, t * chunk); end = min(n, begin + chunk). Capture begin/end/t by value in the lambda, the vectors by reference."
+  ]
+}

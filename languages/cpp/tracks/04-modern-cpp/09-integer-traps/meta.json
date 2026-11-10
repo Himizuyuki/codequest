@@ -1,0 +1,19 @@
+{
+  "title": "Integer Traps",
+  "difficulty": 2,
+  "tags": ["C++20", "<bit>", "std::cmp_less", "std::midpoint", "std::ssize", "signed/unsigned"],
+  "guide": ["cpp20"],
+  "links": [
+    {"title": "cppreference: std::cmp_less and friends (C++20)", "url": "https://en.cppreference.com/w/cpp/utility/intcmp"},
+    {"title": "cppreference: <bit> (popcount, has_single_bit, bit_ceil)", "url": "https://en.cppreference.com/w/cpp/header/bit"},
+    {"title": "cppreference: std::midpoint", "url": "https://en.cppreference.com/w/cpp/numeric/midpoint"},
+    {"title": "cppreference: std::ssize", "url": "https://en.cppreference.com/w/cpp/iterator/size"},
+    {"title": "cppreference: implicit conversions (usual arithmetic conversions)", "url": "https://en.cppreference.com/w/cpp/language/usual_arithmetic_conversions"}
+  ],
+  "hints": [
+    "Every function here is one call to a C++20 library function. The lesson lists them.",
+    "safe_less: std::cmp_less(a, b) from <utility>. Writing a < b converts a to unsigned first, so -1 becomes 4294967295.",
+    "midpoint: std::midpoint(a, b) from <numeric>. (a + b) / 2 overflows for large values.",
+    "<bit>: std::has_single_bit, std::popcount, std::bit_ceil. last_index: std::ssize(v) - 1."
+  ]
+}

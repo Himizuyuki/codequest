@@ -1,0 +1,17 @@
+{
+  "title": "Lambda Factory",
+  "difficulty": 2,
+  "tags": ["lambdas", "captures", "std::function", "closures"],
+  "guide": ["cpp20"],
+  "links": [
+    {"title": "cppreference: lambda expressions", "url": "https://en.cppreference.com/w/cpp/language/lambda"},
+    {"title": "cppreference: std::function", "url": "https://en.cppreference.com/w/cpp/utility/functional/function"},
+    {"title": "C++ Core Guidelines F.53: avoid capturing by reference in lambdas that outlive the scope", "url": "https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#f53-avoid-capturing-by-reference-in-lambdas-that-will-be-used-non-locally-including-returned-stored-on-the-heap-or-passed-to-another-thread"}
+  ],
+  "hints": [
+    "A lambda that is RETURNED must capture by value ([k] or [=]); a reference capture would point to a dead local variable.",
+    "make_counter: a by-value capture is const inside the lambda unless you write `mutable`: [n = start]() mutable { return n++; }",
+    "make_adders: capture the loop variable by value ([i]). With [&i] every adder would refer to the same, already destroyed, variable.",
+    "compose: capture both functions by value (std::move them into the capture: [f = std::move(f), g = std::move(g)])."
+  ]
+}

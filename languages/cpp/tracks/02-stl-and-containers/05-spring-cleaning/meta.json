@@ -1,0 +1,17 @@
+{
+  "title": "Spring Cleaning (Erasing Safely)",
+  "difficulty": 2,
+  "tags": ["C++20", "std::erase_if", "iterator invalidation", "unique"],
+  "guide": ["cpp20", "containers"],
+  "links": [
+    {"title": "cppreference: std::erase / std::erase_if (vector)", "url": "https://en.cppreference.com/w/cpp/container/vector/erase2"},
+    {"title": "cppreference: std::erase_if (map)", "url": "https://en.cppreference.com/w/cpp/container/map/erase_if"},
+    {"title": "cppreference: std::unique", "url": "https://en.cppreference.com/w/cpp/algorithm/unique"},
+    {"title": "Erase-remove idiom (Wikipedia)", "url": "https://en.wikipedia.org/wiki/Erase%E2%80%93remove_idiom"}
+  ],
+  "hints": [
+    "Erasing inside a range-for loop invalidates the loop's iterators - undefined behavior. Do not do it.",
+    "C++20: std::erase_if(container, predicate) removes every matching element in one pass, for vectors AND maps, and returns how many were removed.",
+    "sorted_unique: sort, then std::unique moves duplicates to the end and returns where they start; erase from there to end()."
+  ]
+}

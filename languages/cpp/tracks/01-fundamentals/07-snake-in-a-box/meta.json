@@ -1,0 +1,15 @@
+{
+  "title": "Snake in a Box (Spiral)",
+  "difficulty": 2,
+  "tags": ["2D vectors", "loops", "boundaries"],
+  "guide": ["containers"],
+  "links": [
+    {"title": "LeetCode: Spiral Matrix", "url": "https://leetcode.com/problems/spiral-matrix/"},
+    {"title": "cppreference: std::vector", "url": "https://en.cppreference.com/w/cpp/container/vector"}
+  ],
+  "hints": [
+    "Keep four boundaries: top, bottom, left, right. Walk the top row, then the right column, then the bottom row backwards, then the left column upwards, shrinking a boundary after each.",
+    "After the first two walks, check top <= bottom before the bottom row and left <= right before the left column, or a single row/column is visited twice.",
+    "Use int (not size_t) for the boundaries so that bottom = rows - 1 and decrementing cannot wrap around."
+  ]
+}

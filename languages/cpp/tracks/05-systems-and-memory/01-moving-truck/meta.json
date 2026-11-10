@@ -1,0 +1,18 @@
+{
+  "title": "Moving Truck (Rule of Five)",
+  "difficulty": 4,
+  "tags": ["move semantics", "rule of five", "RAII", "copy", "noexcept"],
+  "guide": ["cpp20"],
+  "links": [
+    {"title": "cppreference: the rule of three/five/zero", "url": "https://en.cppreference.com/w/cpp/language/rule_of_three"},
+    {"title": "cppreference: move constructors", "url": "https://en.cppreference.com/w/cpp/language/move_constructor"},
+    {"title": "cppreference: std::exchange", "url": "https://en.cppreference.com/w/cpp/utility/exchange"},
+    {"title": "C++ Core Guidelines C.21: define or delete all five", "url": "https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#c21-if-you-define-or-delete-any-copy-move-or-destructor-function-define-or-delete-them-all"}
+  ],
+  "hints": [
+    "Constructor: data_ = new int[size]() - the () zero-initialises. Destructor: delete[] data_ (delete[] nullptr is fine).",
+    "Copy constructor: allocate a NEW array and std::copy the elements (deep copy). Copying only the pointer makes two objects delete the same memory.",
+    "Move constructor: steal the pointer and leave the source empty: size_(std::exchange(other.size_, 0)), data_(std::exchange(other.data_, nullptr)).",
+    "Assignments: guard against self-assignment (if (this != &other)), release what you currently own, then copy or steal. Mark both move operations noexcept."
+  ]
+}

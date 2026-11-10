@@ -1,0 +1,18 @@
+{
+  "title": "Concept Bouncer",
+  "difficulty": 3,
+  "tags": ["C++20", "concepts", "requires", "templates", "if constexpr"],
+  "guide": ["cpp20"],
+  "links": [
+    {"title": "cppreference: Constraints and concepts", "url": "https://en.cppreference.com/w/cpp/language/constraints"},
+    {"title": "cppreference: <concepts> (std::integral, std::floating_point, ...)", "url": "https://en.cppreference.com/w/cpp/concepts"},
+    {"title": "cppreference: requires expression", "url": "https://en.cppreference.com/w/cpp/language/requires"},
+    {"title": "C++ Core Guidelines T.10: specify concepts for all template arguments", "url": "https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#t10-specify-concepts-for-all-template-arguments"}
+  ],
+  "hints": [
+    "Number: (std::integral<T> || std::floating_point<T>) && !std::same_as<T, bool>. Surprise: bool IS an integral type, so you must exclude it yourself.",
+    "average: sum into a double (not a T: ints would overflow and truncate), divide by size, and return 0.0 for an empty vector.",
+    "HasName: requires(const T& t) { { t.name() } -> std::convertible_to<std::string>; } - the arrow checks the RESULT type, so a name() returning int does not count.",
+    "describe: an if constexpr chain inside one template works well. Test bool BEFORE std::integral, and use std::convertible_to<const T&, std::string_view> for text."
+  ]
+}

@@ -48,7 +48,7 @@ def run_cpp(p, use_reference=False):
     BUILD.mkdir(exist_ok=True)
     exe = BUILD / (p.id.replace("/", "__") + ("__ref" if use_reference else ""))
     cmd = [
-        os.environ.get("CXX", "g++"), "-std=c++20", "-O1", "-Wall", "-Wextra",
+        os.environ.get("CXX", "g++"), "-std=c++20", "-O1", "-Wall", "-Wextra", "-pthread",
         "-I", str(p.lang_dir / "harness"),
         f'-DSOLUTION="{sol}"',
         str(p.path / "tests.cpp"), "-o", str(exe),
@@ -62,7 +62,7 @@ def run_cpp(p, use_reference=False):
         return "timeout", f"Timed out after {TIMEOUT}s - is there an accidental O(n^2)?"
     out = run.stdout + run.stderr
     if run.returncode < 0:
-        out += f"\nThe program crashed (signal {-run.returncode}) - out-of-bounds access?"
+        out += f"\nThe program crashed (signal {-run.returncode}) - out-of-bounds access, or very deep recursion?"
     return ("pass" if run.returncode == 0 else "fail"), out
 
 

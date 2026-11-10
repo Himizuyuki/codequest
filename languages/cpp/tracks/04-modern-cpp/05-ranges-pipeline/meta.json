@@ -1,0 +1,18 @@
+{
+  "title": "Ranges Pipeline",
+  "difficulty": 3,
+  "tags": ["C++20", "ranges", "views", "projections", "lazy evaluation"],
+  "guide": ["cpp20"],
+  "links": [
+    {"title": "cppreference: Ranges library", "url": "https://en.cppreference.com/w/cpp/ranges"},
+    {"title": "cppreference: std::views::filter", "url": "https://en.cppreference.com/w/cpp/ranges/filter_view"},
+    {"title": "cppreference: std::ranges::sort (projections)", "url": "https://en.cppreference.com/w/cpp/algorithm/ranges/sort"},
+    {"title": "hacking C++: ranges cheat sheets", "url": "https://hackingcpp.com/cpp/std/range_algorithms.html"}
+  ],
+  "hints": [
+    "A pipeline reads left to right: v | std::views::filter(is_even) | std::views::transform(square) | std::views::take(limit). Nothing runs until you loop over it.",
+    "C++20 has no std::ranges::to (that is C++23). Fill the result with a range-for loop and push_back, or std::ranges::copy(view, std::back_inserter(out)).",
+    "sum_while_positive: std::views::take_while. first_n_multiples: std::views::iota(1) is the infinite sequence 1, 2, 3, ... - take(n) makes it finite.",
+    "sort_by_length: std::ranges::sort(words) for the alphabetical order, then std::ranges::stable_sort(words, {}, projection) where the projection returns the length. has_long_word: std::ranges::any_of."
+  ]
+}

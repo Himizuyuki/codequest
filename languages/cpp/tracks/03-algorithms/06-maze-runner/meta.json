@@ -1,0 +1,17 @@
+{
+  "title": "Maze Runner (BFS)",
+  "difficulty": 3,
+  "tags": ["BFS", "graphs", "grid", "queue", "interview classic"],
+  "guide": ["patterns", "containers", "complexity"],
+  "links": [
+    {"title": "Breadth-first search (Wikipedia)", "url": "https://en.wikipedia.org/wiki/Breadth-first_search"},
+    {"title": "cppreference: std::queue", "url": "https://en.cppreference.com/w/cpp/container/queue"},
+    {"title": "LeetCode: Shortest Path in Binary Matrix", "url": "https://leetcode.com/problems/shortest-path-in-binary-matrix/"}
+  ],
+  "hints": [
+    "Shortest path where every step costs 1 = breadth-first search. DFS finds A path, not the shortest one.",
+    "Use a std::queue of positions and a distance grid initialised to -1 (which doubles as the 'visited' marker).",
+    "Mark a cell as visited WHEN YOU PUSH IT, not when you pop it, or the same cell enters the queue many times.",
+    "Neighbours: loop over const int dr[] = {1,-1,0,0}, dc[] = {0,0,1,-1} and check the bounds before reading the grid."
+  ]
+}

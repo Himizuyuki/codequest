@@ -1,0 +1,17 @@
+{
+  "title": "Coin Machine (Dynamic Programming)",
+  "difficulty": 3,
+  "tags": ["dynamic programming", "arrays", "interview classic"],
+  "guide": ["patterns", "complexity"],
+  "links": [
+    {"title": "LeetCode: Coin Change", "url": "https://leetcode.com/problems/coin-change/"},
+    {"title": "Dynamic programming (Wikipedia)", "url": "https://en.wikipedia.org/wiki/Dynamic_programming"},
+    {"title": "NeetCode roadmap (1-D DP)", "url": "https://neetcode.io/roadmap"}
+  ],
+  "hints": [
+    "Greedy (always take the biggest coin) is wrong: with coins {1, 3, 4} and amount 6 it gives 4+1+1 = 3 coins, but 3+3 = 2.",
+    "Define best[a] = fewest coins to make amount a. Then best[a] = 1 + min over coins c <= a of best[a - c].",
+    "Fill best[0..amount] from small to large. best[0] = 0; use a big sentinel (e.g. amount + 1) for 'impossible'.",
+    "At the end, a value still equal to the sentinel means -1."
+  ]
+}

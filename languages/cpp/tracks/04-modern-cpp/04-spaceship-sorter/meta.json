@@ -1,0 +1,17 @@
+{
+  "title": "Spaceship Sorter (operator<=>)",
+  "difficulty": 3,
+  "tags": ["C++20", "operator<=>", "comparison", "ordering categories"],
+  "guide": ["cpp20"],
+  "links": [
+    {"title": "cppreference: default comparisons (operator<=>)", "url": "https://en.cppreference.com/w/cpp/language/default_comparisons"},
+    {"title": "cppreference: std::strong_ordering", "url": "https://en.cppreference.com/w/cpp/utility/compare/strong_ordering"},
+    {"title": "cppreference: std::weak_ordering", "url": "https://en.cppreference.com/w/cpp/utility/compare/weak_ordering"}
+  ],
+  "hints": [
+    "Date: delete the two placeholder operators and write ONE line: auto operator<=>(const Date&) const = default; It compares members in declaration order and also gives you ==.",
+    "relation: auto c = a <=> b; then test c < 0, c > 0, or c == 0 (comparison categories compare against the literal 0).",
+    "CaseInsensitive: compare character by character on std::tolower values; return the first non-equal result, then compare the lengths. `x <=> y` on two ints gives std::strong_ordering, which converts to std::weak_ordering.",
+    "A hand-written operator<=> does NOT generate operator==. Write it too: return (*this <=> other) == 0;"
+  ]
+}

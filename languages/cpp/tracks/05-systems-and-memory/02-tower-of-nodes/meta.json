@@ -1,0 +1,17 @@
+{
+  "title": "Tower of Nodes (unique_ptr)",
+  "difficulty": 3,
+  "tags": ["std::unique_ptr", "ownership", "linked list", "destructors", "stack overflow"],
+  "guide": ["cpp20"],
+  "links": [
+    {"title": "cppreference: std::unique_ptr", "url": "https://en.cppreference.com/w/cpp/memory/unique_ptr"},
+    {"title": "cppreference: std::make_unique", "url": "https://en.cppreference.com/w/cpp/memory/unique_ptr/make_unique"},
+    {"title": "C++ Core Guidelines R.20: use unique_ptr or shared_ptr to represent ownership", "url": "https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#r20-use-unique_ptr-or-shared_ptr-to-represent-ownership"}
+  ],
+  "hints": [
+    "push: the new node takes ownership of the old head: head_ = std::make_unique<Node>(Node{value, std::move(head_)});",
+    "pop: save the value, then head_ = std::move(head_->next); - the old top node is destroyed automatically.",
+    "A unique_ptr cannot be copied, only moved: every transfer of ownership is a visible std::move.",
+    "The million-node test: the default destructor destroys node 1, whose member destroys node 2, whose member... one nested call per node, until the call stack overflows. Write ~Stack() as a loop: while (head_) head_ = std::move(head_->next);"
+  ]
+}

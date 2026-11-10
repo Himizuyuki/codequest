@@ -30,8 +30,8 @@ Types and operators, control flow, functions, strings, arrays/vectors, reference
 - [x] 1.4 Palindrome Detective - two indices, `isalnum`/`tolower`, one-deletion variant
 - [x] 1.5 Space Telegram - run-length encoding / decoding, parsing numbers
 - [ ] Digit Alchemist - digits of a number, sums, reversing, overflow-safe
-- [ ] Prime Sieve - nested loops, `vector<bool>`, sieve of Eratosthenes
-- [ ] Snake in a Box - 2D vectors, spiral traversal
+- [x] 1.6 Prime Sieve - nested loops, `vector<bool>`, sieve of Eratosthenes
+- [x] 1.7 Snake in a Box - 2D vectors, spiral traversal
 - [ ] Swap Station - references vs. pointers vs. values (`void swap(int&, int&)`)
 - [ ] Const Detective - `const`, `const&`, which overload is called
 
@@ -46,7 +46,7 @@ Types and operators, control flow, functions, strings, arrays/vectors, reference
 - [ ] Iterator Pipeline - `std::transform`, `std::remove_if` + erase, `accumulate`
 - [ ] Inventory Merge - nested maps, structured bindings
 - [ ] Sort Anything - sort by multiple keys, stable sort, `std::pair`/`std::tuple` ordering
-- [ ] Iterator Invalidation Quiz - what breaks when you `push_back` while looping
+- [x] 2.5 Spring Cleaning - erasing safely, C++20 `std::erase_if`, iterator invalidation
 
 ## Track 03 - Algorithms (interview patterns)
 Each pattern: one easy intro, then harder variants.
@@ -57,55 +57,63 @@ Each pattern: one easy intro, then harder variants.
 - [ ] More two pointers: sorted-array dedupe, three sum
 - [ ] More sliding window: max sum subarray of size k, minimum window substring
 - [ ] Prefix sums: subarray sum equals k, range-sum queries
-- [ ] Binary search: first bad version, search in rotated array, square root
-- [ ] Sorting & intervals: merge intervals, meeting rooms
+- [x] 3.5 Bookshelf Search - binary search, lower bound, integer square root
+- [x] 3.8 Meeting Merger - sort then sweep (merge intervals)
+- [ ] More binary search: search in rotated array, first bad version
 - [ ] Linked lists: reverse, detect cycle, merge two lists
 - [ ] Trees: depth, level order, validate BST, lowest common ancestor
-- [ ] Graphs BFS: shortest path in a maze, number of islands, word ladder
+- [x] 3.6 Maze Runner - BFS shortest path on a grid
+- [ ] More BFS: number of islands, word ladder
 - [ ] Graphs DFS: connected components, topological sort, cycle detection
 - [ ] Heaps: k-th largest, top-k frequent, merge k sorted lists
 - [ ] Recursion & backtracking: subsets, permutations, N-queens
-- [ ] Dynamic programming: climbing stairs, coin change, longest common subsequence, knapsack
+- [x] 3.7 Coin Machine - 1-D dynamic programming (coin change)
+- [ ] More DP: climbing stairs, longest common subsequence, knapsack
 - [ ] Greedy: jump game, task scheduler
 - [ ] Union-find and tries: accounts merge, autocomplete
 - [ ] Bit tricks: single number, count bits, power of two
 
 ## Track 04 - Modern C++ (11 -> 23)
 - [x] 4.1 Vending Machine - `std::optional`, `from_chars`
+- [x] 4.2 Lambda Factory - captures, `mutable`, `std::function`, dangling references
+- [x] 4.3 Shape Zoo - `std::variant`, `std::visit`, `overloaded`, `<numbers>`
+- [x] 4.4 Spaceship Sorter - `operator<=>`, ordering categories (C++20)
+- [x] 4.5 Ranges Pipeline - views, projections, laziness (C++20)
+- [x] 4.6 Concept Bouncer - concepts, `requires`, `if constexpr` (C++20)
+- [x] 4.7 No-Copy Parser - `std::span`, `string_view`, `starts_with` (C++20)
+- [x] 4.8 Compile-Time Kitchen - `constexpr`, `consteval`, `constinit` (C++20)
+- [x] 4.9 Integer Traps - `<bit>`, `std::cmp_less`, `std::midpoint`, `std::ssize` (C++20)
+- [x] 4.10 Receipt Printer - `std::format` (C++20)
 - [ ] Structured bindings and `if` with initializer - split a log line
-- [ ] Move semantics - write a movable `Buffer`, see copies vs moves
-- [ ] Lambdas & `std::function` - event dispatcher, captures (by value / by reference)
-- [ ] `std::variant` + `std::visit` - a tiny expression evaluator
-- [ ] Ranges and views (C++20) - lazy pipelines (`filter`, `transform`, `take`)
-- [ ] Concepts (C++20) - constrain a generic `sum`/`max_of`
-- [ ] Templates - a generic `Stack<T>`, function templates, `constexpr if`
-- [ ] `span` and `string_view` - no-copy parsing
-- [ ] `constexpr` - compile-time lookup tables
+- [ ] Templates - a generic `Stack<T>`, function templates
+- [ ] Designated initializers, `using enum`, `std::source_location` (C++20)
 - [ ] `std::expected` (C++23) - errors without exceptions
-- [ ] Three-way comparison `<=>` (C++20) - sortable structs for free
+- [ ] Coroutines - a hand-written generator (C++20)
 
 ## Track 05 - Systems & Memory
 - [ ] Pointers & arrays - pointer arithmetic, `sizeof`, decay
+- [x] 5.1 Moving Truck - rule of five: copy, move, `noexcept`
+- [x] 5.2 Tower of Nodes - `unique_ptr` ownership, recursive-destructor stack overflow
+- [x] 5.3 Parallel Sum - `std::jthread`, `std::atomic`, data races (C++20)
 - [ ] RAII - a `ScopeGuard`, a file handle wrapper
-- [ ] `unique_ptr` / `shared_ptr` - a linked list without leaks, ownership diagrams
-- [ ] Rule of 0/3/5 - a dynamic array with copy and move
+- [ ] `shared_ptr` / `weak_ptr` - cycles and how to break them
 - [ ] Object lifetime - dangling references and how to spot them
 - [ ] Memory layout - struct padding, alignment, `sizeof` puzzles
 - [ ] Inheritance & virtual functions - vtables, slicing, virtual destructors
-- [ ] Threads - `std::thread`, `mutex`, a parallel sum
 - [ ] Producer/consumer - `condition_variable`, a blocking queue
 - [ ] Atomics & memory order - a spinlock, a lock-free counter
 - [ ] Undefined behavior museum - spot the UB (overflow, out-of-bounds, use-after-free)
 
 ## Track 06 - Interview Drills
-- [ ] Design classics: LRU cache, min stack, rate limiter, tiny autocomplete, iterator over nested lists
+- [x] 6.1 LRU Cache - `std::list` + `unordered_map`, iterator stability
+- [ ] More design classics: min stack, rate limiter, tiny autocomplete, iterator over nested lists
 - [ ] Timed mocks (45 min, 2 problems) with a self-review checklist
 - [ ] "Explain your complexity" write-up template next to each solution
 - [ ] C++ gotcha quiz: UB, slicing, ODR, integer promotion, `vector<bool>`
 - [ ] Behavioral prep notes: STAR stories template
 
 ## Guide notes (`./learn guide`)
-- [x] resources (links), complexity, containers, strings, interview-tips, how-ci-works, patterns
+- [x] resources (links), complexity, containers, strings, interview-tips, how-ci-works, patterns, cpp20-quirks
 - [ ] templates, memory-model, concurrency
 
 ## Open questions

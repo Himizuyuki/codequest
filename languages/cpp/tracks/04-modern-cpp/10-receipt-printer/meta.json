@@ -1,0 +1,17 @@
+{
+  "title": "Receipt Printer (std::format)",
+  "difficulty": 2,
+  "tags": ["C++20", "std::format", "strings", "formatting"],
+  "guide": ["cpp20", "strings"],
+  "links": [
+    {"title": "cppreference: std::format", "url": "https://en.cppreference.com/w/cpp/utility/format/format"},
+    {"title": "cppreference: format specification mini-language", "url": "https://en.cppreference.com/w/cpp/utility/format/spec"},
+    {"title": "{fmt} library (where std::format comes from)", "url": "https://fmt.dev/"}
+  ],
+  "hints": [
+    "A replacement field is {:[fill][align][sign][#][0][width][.precision][type]}. Align: < left, > right, ^ centre.",
+    "receipt_line: \"{:<12.12}{:>3} x {:>8.2f} = {:>9.2f}\". For a string, .12 is a MAXIMUM length (truncation); for a double, .2 is the number of decimals.",
+    "hex_byte: \"0x{:02x}\" - but format an unsigned int, not the unsigned char itself. pad_id: \"{:06}\".",
+    "percent: \"{:.1f}%\" with ratio * 100."
+  ]
+}
