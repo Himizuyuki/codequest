@@ -4,7 +4,8 @@
   ./learn list                 roadmap with your progress
   ./learn next                 show the next unsolved problem
   ./learn show 1.2             print a problem statement
-  ./learn test 1.2             build and run your solution against the tests
+  ./learn test 1.2 [name...]   build and run your solution against the tests (names: only matching tests)
+  ./learn play 1.2 [name...]   build and run YOUR OWN tests in my_tests.cpp (created on first use)
   ./learn lesson 1.2           a short lesson on the ideas behind the problem
   ./learn guide [topic]        reference notes (cheatsheets) - no topic lists them
   ./learn hint 1.2 [n]         reveal hint n (default 1)
@@ -42,13 +43,17 @@ def c(code, text):
 # Languages. Adding one means adding a languages/<name>/ tree and a runner here.
 # --------------------------------------------------------------------------
 
-def run_cpp(p, use_reference=False):
+CXXFLAGS = ["-std=c++20", "-O1", "-Wall", "-Wextra", "-pthread"]
+SANITIZE = ["-g", "-fsanitize=address,undefined", "-fno-omit-frame-pointer"]
+
+
+def run_cpp(p, use_reference=False, only=()):
     """Build tests.cpp against the learner's (or reference) solution and run it."""
     sol = p.reference if use_reference else p.path / "solution.cpp"
     BUILD.mkdir(exist_ok=True)
     exe = BUILD / (p.id.replace("/", "__") + ("__ref" if use_reference else ""))
     cmd = [
-        os.environ.get("CXX", "g++"), "-std=c++20", "-O1", "-Wall", "-Wextra", "-pthread",
+        os.environ.get("CXX", "g++"), *CXXFLAGS,
         "-I", str(p.lang_dir / "harness"),
         f'-DSOLUTION="{sol}"',
         str(p.path / "tests.cpp"), "-o", str(exe),
@@ -57,7 +62,7 @@ def run_cpp(p, use_reference=False):
     if build.returncode != 0:
         return "compile_error", build.stderr
     try:
-        run = subprocess.run([str(exe)], capture_output=True, text=True, timeout=TIMEOUT)
+        run = subprocess.run([str(exe), *only], capture_output=True, text=True, timeout=TIMEOUT)
     except subprocess.TimeoutExpired:
         return "timeout", f"Timed out after {TIMEOUT}s - is there an accidental O(n^2)?"
     out = run.stdout + run.stderr
@@ -221,15 +226,77 @@ def cmd_next(args, tracks):
 def cmd_test(args, tracks):
     p = resolve(tracks, args.problem)
     print(c("1", f"{p.code}  {p.title}\n"))
-    status, out = RUNNERS[args.lang](p)
-    remember(args.lang, p.id, status)
+    status, out = RUNNERS[args.lang](p, only=args.only)
+    if not args.only:           # a filtered run says nothing about the whole problem
+        remember(args.lang, p.id, status)
     print(out)
     if status == "pass":
-        print(c("1;32", "Solved! Run ./learn next for the next challenge."))
+        if args.only:
+            print(c("1;32", "Those pass.") + f"  Run ./learn test {p.code} for the whole suite.")
+        else:
+            print(c("1;32", "Solved! Run ./learn next for the next challenge."))
         return 0
     label = {"compile_error": "Does not compile yet.", "timeout": "Too slow.", "fail": "Not there yet."}[status]
     print(c("1;31", label) + f"  Try ./learn hint {p.code} if you are stuck.")
+    if status == "fail":
+        print(f"Experiment with your own cases: ./learn play {p.code}")
     return 1
+
+
+MY_TESTS_TEMPLATE = """\
+// Your own tests for: {title}
+//
+//   ./learn play {code}             build and run this file
+//   ./learn play {code} scratch     only the tests whose name contains "scratch"
+//   ./learn play {code} --sanitize  with AddressSanitizer + UBSan (finds out-of-bounds, overflow, leaks)
+//
+// Nothing here counts for progress, and the official tests never read this file: break things freely.
+#include <iostream>
+
+#include "mini_test.hpp"
+#include "solution.cpp"
+
+TEST(scratch) {{
+    // SHOW(expression);            prints the expression and its value, e.g.  SHOW(my_function(42));
+    // CHECK_EQ(actual, expected);  fails the test, and shows both, when they differ
+    // CHECK(condition);            fails when the condition is false
+    // CHECK_THROWS(expression);    fails unless the expression throws
+    // std::cout << ... also works.
+    CHECK(true);
+}}
+
+// Add as many TEST(name) {{ ... }} blocks as you like.
+// Prefer a plain program? Put  #define MINI_TEST_NO_MAIN  above the includes and write your own main().
+"""
+
+
+def cmd_play(args, tracks):
+    """Build and run the learner's own my_tests.cpp, with the terminal attached (no capture, no timeout)."""
+    p = resolve(tracks, args.problem)
+    mine = p.path / "my_tests.cpp"
+    rel = mine.relative_to(ROOT)
+    if not mine.exists():
+        mine.write_text(MY_TESTS_TEMPLATE.format(title=p.title, code=p.code))
+        print(f"Created {rel} - edit it, then run ./learn play {p.code} again.\n")
+    BUILD.mkdir(exist_ok=True)
+    exe = BUILD / (p.id.replace("/", "__") + "__play")
+    cmd = [os.environ.get("CXX", "g++"), *CXXFLAGS, *(SANITIZE if args.sanitize else []),
+           "-I", str(p.lang_dir / "harness"), str(mine), "-o", str(exe)]
+    shown = " ".join(str(Path(x).relative_to(ROOT)) if x.startswith(str(ROOT)) else x for x in cmd)
+    print(c("1", f"{p.code}  {p.title}  (your tests: {rel})"))
+    print(c("2", f"$ {shown}\n$ {exe.relative_to(ROOT)} {' '.join(args.only)}".rstrip()) + "\n")
+    sys.stdout.flush()
+    if subprocess.run(cmd).returncode != 0:
+        print(c("1;31", "\nDoes not compile."))
+        return 1
+    try:
+        code = subprocess.run([str(exe), *args.only]).returncode
+    except KeyboardInterrupt:
+        print("\nInterrupted.")
+        return 130
+    if code < 0:
+        print(c("1;31", f"\nThe program crashed (signal {-code}).") + ("" if args.sanitize else f"  ./learn play {p.code} --sanitize usually says where."))
+    return 0 if code == 0 else 1
 
 
 def cmd_hint(args, tracks):
@@ -285,6 +352,8 @@ def cmd_sync(args, tracks):
     titles = {p.id: p.title for p in all_problems(tracks)}
 
     git("add", "--", "progress.json", "PROGRESS.md", f"languages/{args.lang}/tracks/*/*/solution.cpp")
+    if list(ROOT.glob(f"languages/{args.lang}/tracks/*/*/my_tests.cpp")):      # your own tests travel with you
+        git("add", "--", f"languages/{args.lang}/tracks/*/*/my_tests.cpp")
     if git("diff", "--cached", "--quiet").returncode == 0:
         print("Nothing new to commit.")
         return 0
@@ -375,8 +444,13 @@ def main():
     sub = ap.add_subparsers(dest="cmd", required=True)
     sub.add_parser("list")
     sub.add_parser("next")
-    for name in ("show", "test"):
-        sub.add_parser(name).add_argument("problem")
+    sub.add_parser("show").add_argument("problem")
+    for name in ("test", "play"):
+        sp = sub.add_parser(name)
+        sp.add_argument("problem")
+        sp.add_argument("only", nargs="*", help="run only the tests whose name contains one of these words")
+        if name == "play":
+            sp.add_argument("--sanitize", action="store_true", help="build with AddressSanitizer and UBSan")
     h = sub.add_parser("hint")
     h.add_argument("problem")
     h.add_argument("n", nargs="?", type=int, default=1)
@@ -392,7 +466,7 @@ def main():
 
     tracks = load(args.lang)
     handler = {
-        "list": cmd_list, "next": cmd_next, "show": cmd_show, "test": cmd_test,
+        "list": cmd_list, "next": cmd_next, "show": cmd_show, "test": cmd_test, "play": cmd_play,
         "lesson": cmd_lesson, "guide": cmd_guide, "hint": cmd_hint, "progress": cmd_progress, "sync": cmd_sync, "check-refs": cmd_check_refs,
     }[args.cmd]
     sys.exit(handler(args, tracks) or 0)

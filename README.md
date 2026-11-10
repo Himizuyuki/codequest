@@ -16,6 +16,8 @@ You need `g++` 13+ (problem 4.10 uses `<format>`; `CXX=clang++ ./learn ...` to s
 ./learn next              # show the next unsolved problem (statement + links)
 ./learn lesson 1.1        # a short lesson on the ideas behind the problem
 ./learn test 1.1          # build + run your solution against the tests
+./learn test 1.1 fifteen  # only the tests whose name contains "fifteen"
+./learn play 1.1          # build + run YOUR OWN tests (my_tests.cpp, created on first use)
 ./learn hint 1.1          # stuck? hints one at a time (./learn hint 1.1 2)
 ./learn guide             # reference notes: complexity, containers, strings, interview tips...
 ./learn progress          # re-verify everything
@@ -23,8 +25,17 @@ You need `g++` 13+ (problem 4.10 uses `<format>`; `CXX=clang++ ./learn ...` to s
 ```
 
 The loop: **`next` -> read the lesson -> edit `solution.cpp` -> `test` -> commit and push.**
-Each test prints PASS/FAIL with what you returned vs. what was expected. Test runs time out
-after 10 s, which catches an accidentally quadratic solution.
+A failing test shows the line of the test, what you returned, what was expected and, for strings
+and sequences, where the first difference is (invisible characters are escaped: `"a\n"`).
+Test runs time out after 10 s, which catches an accidentally quadratic solution.
+
+### Your own tests
+`./learn play 1.1` creates `my_tests.cpp` next to your solution and runs it. Write as many
+`TEST(name) { ... }` blocks as you like; inside them `SHOW(expr)` prints an expression and its value,
+and `CHECK_EQ` / `CHECK` / `CHECK_THROWS` work as in the official tests. It runs attached to your
+terminal with no time limit, never counts for progress, and prints the exact `g++` command so you
+can run it by hand. `./learn play 1.1 --sanitize` builds with AddressSanitizer and UBSan, which
+pinpoint out-of-bounds accesses, overflows and leaks. `./learn sync` commits these files too.
 
 Everything is also readable on GitHub without the CLI: each problem folder has `problem.md`
 and `lesson.md`, `languages/cpp/guide/` has the notes, and [ROADMAP.md](ROADMAP.md) is the plan.
