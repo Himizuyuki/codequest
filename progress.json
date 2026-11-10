@@ -1,6 +1,10 @@
 {
   "cpp": {
-    "solved": {},
-    "total": 8
+    "solved": {
+      "01-fundamentals/01-fizzbuzz-reloaded": {
+        "first_solved": "2026-11-10"
+      }
+    },
+    "total": 39
   }
 }
