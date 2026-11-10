@@ -1,0 +1,20 @@
+{
+  "title": "Ticket Booth (compare-exchange, call_once, spinlock)",
+  "difficulty": 5,
+  "tags": ["concurrency", "std::atomic", "compare_exchange", "check-then-act", "std::call_once", "std::atomic_flag", "C++20"],
+  "guide": ["concurrency", "cpp20"],
+  "links": [
+    {"title": "cppreference: atomic::compare_exchange_weak / strong", "url": "https://en.cppreference.com/w/cpp/atomic/atomic/compare_exchange"},
+    {"title": "cppreference: std::call_once", "url": "https://en.cppreference.com/w/cpp/thread/call_once"},
+    {"title": "cppreference: std::atomic_flag (test(), wait() are C++20)", "url": "https://en.cppreference.com/w/cpp/atomic/atomic_flag"},
+    {"title": "Preshing: An Introduction to Lock-Free Programming", "url": "https://preshing.com/20120612/an-introduction-to-lock-free-programming/"},
+    {"title": "cppreference: std::memory_order", "url": "https://en.cppreference.com/w/cpp/atomic/memory_order"}
+  ],
+  "hints": [
+    "TicketBooth: `if (left > 0) --left;` is two steps even on an atomic - two buyers can both see 1. You need 'decrement only if still what I saw'.",
+    "The CAS loop: int seen = left.load(); while (seen > 0) { if (left.compare_exchange_weak(seen, seen - 1)) return true; } return false;  On failure compare_exchange writes the current value into `seen`, so the loop re-checks by itself.",
+    "Do not fetch_sub first and add back when the result is negative: remaining() can then be observed below zero.",
+    "Lazy: a std::once_flag member and std::call_once(flag, [&] { value = make(); }); in get(). Late callers block until the first one has finished.",
+    "SpinLock: one std::atomic_flag. lock: while (flag.test_and_set(std::memory_order_acquire)) {}   try_lock: return !flag.test_and_set(...);   unlock: flag.clear(std::memory_order_release);"
+  ]
+}

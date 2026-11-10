@@ -1,1 +1,1 @@
-{"title": "Systems & Memory", "description": "RAII, smart pointers, object lifetime, memory layout, threads and atomics."}
+{"title": "Systems & Memory", "description": "RAII, smart pointers, object lifetime, memory layout, threads, locks, race conditions and processes."}

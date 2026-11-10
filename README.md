@@ -56,7 +56,7 @@ solved each one is kept. Watch it in the repo's **Actions** tab. Details: `./lea
 
 **No CI available?** `./learn sync` does the same job from your own machine: it runs
 `progress --write`, commits your `solution.cpp` files plus `progress.json`/`PROGRESS.md`
-(message: "Progress: N/34 solved" and what is new), and pushes. Use `--no-push` to commit only.
+(message: "Progress: N/39 solved" and what is new), and pushes. Use `--no-push` to commit only.
 It pushes over HTTPS with `$GITHUB_PERSONAL_ACCESS_TOKEN` if that is set (never stored), else with
 your normal git credentials. If the push is rejected, run `git pull --rebase` and sync again.
 If CI is enabled too, the two agree - the first-solved dates are preserved.

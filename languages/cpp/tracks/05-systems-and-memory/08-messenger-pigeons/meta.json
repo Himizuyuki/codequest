@@ -1,0 +1,21 @@
+{
+  "title": "Messenger Pigeons (fork, pipe, exec)",
+  "difficulty": 5,
+  "tags": ["processes", "fork", "pipe", "exec", "waitpid", "file descriptors", "POSIX"],
+  "guide": ["concurrency"],
+  "links": [
+    {"title": "man 2 fork", "url": "https://man7.org/linux/man-pages/man2/fork.2.html"},
+    {"title": "man 2 pipe (with a complete example)", "url": "https://man7.org/linux/man-pages/man2/pipe.2.html"},
+    {"title": "man 2 waitpid (WIFEXITED, WEXITSTATUS, WIFSIGNALED...)", "url": "https://man7.org/linux/man-pages/man2/waitpid.2.html"},
+    {"title": "man 3 exec (execvp and friends)", "url": "https://man7.org/linux/man-pages/man3/exec.3.html"},
+    {"title": "man 7 pipe (capacity, EOF, blocking rules)", "url": "https://man7.org/linux/man-pages/man7/pipe.7.html"}
+  ],
+  "hints": [
+    "run_child: pid = fork(); in the child (pid == 0): _exit(child_main()); in the parent: waitpid(pid, &status, 0), then WIFEXITED(status) ? WEXITSTATUS(status) : 128 + WTERMSIG(status).",
+    "The child must end with _exit(), never `return` and never exit(): returning would let a second copy of the test program carry on running the tests.",
+    "capture: fflush(stdout) BEFORE fork (or buffered text is duplicated into the child). int fd[2]; pipe(fd). Child: dup2(fd[1], STDOUT_FILENO); close both fd; run; fflush(stdout); _exit(0).",
+    "capture, parent side: close(fd[1]) FIRST - while any write end is open, read() never reports end-of-file. Then loop read(fd[0], buf, sizeof buf) until it returns 0, close(fd[0]), and only then waitpid.",
+    "Read before you wait: a pipe holds about 64 KiB. A child writing more blocks until the parent reads; a parent stuck in waitpid never reads. That is a deadlock between two processes.",
+    "run_program: build std::vector<char*> from argv (const_cast<char*>(s.c_str())) plus a final nullptr; in the child, after dup2: execvp(args[0], args.data()); _exit(127);  - the line after execvp only runs if exec failed."
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "title": "Conveyor Belt (condition variables)",
+  "difficulty": 4,
+  "tags": ["concurrency", "std::condition_variable", "producer/consumer", "blocking queue", "std::mutex"],
+  "guide": ["concurrency"],
+  "links": [
+    {"title": "cppreference: std::condition_variable", "url": "https://en.cppreference.com/w/cpp/thread/condition_variable"},
+    {"title": "cppreference: condition_variable::wait (the predicate overload)", "url": "https://en.cppreference.com/w/cpp/thread/condition_variable/wait"},
+    {"title": "C++ Core Guidelines CP.42: don't wait without a condition", "url": "https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#cp42-dont-wait-without-a-condition"},
+    {"title": "Wikipedia: Producer-consumer problem", "url": "https://en.wikipedia.org/wiki/Producer%E2%80%93consumer_problem"}
+  ],
+  "hints": [
+    "Members: a std::deque<int>, the capacity, a bool closed, one std::mutex, and two std::condition_variable: not_full and not_empty.",
+    "pop: std::unique_lock lock(m); not_empty.wait(lock, [&] { return !items.empty() || closed; }); then if items is empty (so it is closed) return std::nullopt.",
+    "push mirrors it: not_full.wait(lock, [&] { return items.size() < capacity || closed; }); if closed return false; push_back; then not_empty.notify_one().",
+    "After a successful pop call not_full.notify_one(): a producer may be waiting for that free slot.",
+    "close: set closed under the lock, then notify_all() on BOTH condition variables - every sleeper has to wake up and see it."
+  ]
+}

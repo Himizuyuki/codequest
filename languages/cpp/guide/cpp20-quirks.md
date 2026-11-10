@@ -34,8 +34,8 @@ practises it. Compile with `-std=c++20` (g++ 13 or newer for everything below).
 | `<bit>` | `popcount`, `has_single_bit`, `bit_ceil`, `bit_cast` | unsigned types only | 4.9 |
 | `std::cmp_less`..., `std::ssize`, `std::midpoint` | safe mixed comparisons, signed size, overflow-free middle | plain `-1 < 1u` is still false | 4.9, 3.5 |
 | `<numbers>` | `std::numbers::pi` | finally no `M_PI` | 4.3 |
-| `std::jthread`, `stop_token` | thread that joins itself and can be asked to stop | `std::thread` still terminates the program if not joined | 5.3 |
-| `std::atomic` waits, semaphores, `latch`, `barrier` | more synchronisation tools | | 5.3 |
+| `std::jthread`, `stop_token` | thread that joins itself and can be asked to stop | `std::thread` still terminates the program if not joined | 5.3, 5.5 |
+| `std::atomic` waits, semaphores, `latch`, `barrier` | `atomic_flag` is finally initialised by default, and gains `test()` | 5.6, 5.7 |
 | `std::source_location` | file/line without macros | | |
 | `<chrono>` calendars and time zones | `2024y / March / 1` | library support arrived late | |
 | `std::to_array`, `std::make_shared<T[]>`, `std::bind_front` | small helpers | | |

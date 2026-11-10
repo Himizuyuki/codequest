@@ -95,13 +95,17 @@ Each pattern: one easy intro, then harder variants.
 - [x] 5.1 Moving Truck - rule of five: copy, move, `noexcept`
 - [x] 5.2 Tower of Nodes - `unique_ptr` ownership, recursive-destructor stack overflow
 - [x] 5.3 Parallel Sum - `std::jthread`, `std::atomic`, data races (C++20)
+- [x] 5.4 Vault Transfers - `std::mutex`, `std::scoped_lock`, deadlock, consistent snapshots
+- [x] 5.5 Conveyor Belt - producer/consumer: `condition_variable`, a bounded blocking queue
+- [x] 5.6 Relay Race - forcing an order onto threads, `notify_one` vs `notify_all`
+- [x] 5.7 Ticket Booth - check-then-act, `compare_exchange`, `call_once`, a spinlock
+- [x] 5.8 Messenger Pigeons - processes: `fork`, `pipe`, `exec`, `waitpid`, zombies
 - [ ] RAII - a `ScopeGuard`, a file handle wrapper
 - [ ] `shared_ptr` / `weak_ptr` - cycles and how to break them
 - [ ] Object lifetime - dangling references and how to spot them
 - [ ] Memory layout - struct padding, alignment, `sizeof` puzzles
 - [ ] Inheritance & virtual functions - vtables, slicing, virtual destructors
-- [ ] Producer/consumer - `condition_variable`, a blocking queue
-- [ ] Atomics & memory order - a spinlock, a lock-free counter
+- [ ] More concurrency - thread pool, readers/writer lock, `std::stop_token`, `std::async`/futures, dining philosophers
 - [ ] Undefined behavior museum - spot the UB (overflow, out-of-bounds, use-after-free)
 
 ## Track 06 - Interview Drills
@@ -113,7 +117,7 @@ Each pattern: one easy intro, then harder variants.
 - [ ] Behavioral prep notes: STAR stories template
 
 ## Guide notes (`./learn guide`)
-- [x] resources (links), complexity, containers, strings, interview-tips, how-ci-works, patterns, cpp20-quirks
+- [x] resources (links), complexity, containers, strings, interview-tips, how-ci-works, patterns, cpp20-quirks, concurrency
 - [ ] templates, memory-model, concurrency
 
 ## Open questions

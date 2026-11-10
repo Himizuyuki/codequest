@@ -1,0 +1,19 @@
+{
+  "title": "Vault Transfers (mutex & deadlock)",
+  "difficulty": 4,
+  "tags": ["concurrency", "std::mutex", "std::scoped_lock", "deadlock", "race conditions"],
+  "guide": ["concurrency"],
+  "links": [
+    {"title": "cppreference: std::scoped_lock", "url": "https://en.cppreference.com/w/cpp/thread/scoped_lock"},
+    {"title": "cppreference: std::mutex", "url": "https://en.cppreference.com/w/cpp/thread/mutex"},
+    {"title": "C++ Core Guidelines CP.21: use std::lock() or std::scoped_lock to acquire multiple mutexes", "url": "https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#cp21-use-stdlock-or-stdscoped_lock-to-acquire-multiple-mutexes"},
+    {"title": "Wikipedia: Deadlock (the four Coffman conditions)", "url": "https://en.wikipedia.org/wiki/Deadlock_(computer_science)"}
+  ],
+  "hints": [
+    "Get it right first with ONE std::mutex for the whole bank: lock it (std::lock_guard) in transfer, balance and total. That passes every test.",
+    "The check (enough money?) and the two updates must happen under the same lock. Checking, unlocking, then updating is a race condition even though no data race remains.",
+    "Scaling up: one mutex per account (std::vector<std::mutex> sized in the constructor - a mutex cannot be copied or moved). In transfer use std::scoped_lock lock(m[from], m[to]); it takes both without deadlocking.",
+    "from == to with per-account locks: locking the same mutex twice is undefined behavior. Handle that case before locking two.",
+    "total() with per-account locks must hold ALL of them while it adds, otherwise it can see money that has left one account and not yet reached the other. Always lock them in index order."
+  ]
+}

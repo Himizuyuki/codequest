@@ -1,0 +1,19 @@
+{
+  "title": "Relay Race (taking turns)",
+  "difficulty": 4,
+  "tags": ["concurrency", "std::condition_variable", "thread ordering", "notify_all", "std::atomic wait (C++20)"],
+  "guide": ["concurrency"],
+  "links": [
+    {"title": "cppreference: condition_variable::notify_all", "url": "https://en.cppreference.com/w/cpp/thread/condition_variable/notify_all"},
+    {"title": "cppreference: std::atomic<T>::wait (C++20)", "url": "https://en.cppreference.com/w/cpp/atomic/atomic/wait"},
+    {"title": "LeetCode 1114: Print in Order (the same idea)", "url": "https://leetcode.com/problems/print-in-order/"},
+    {"title": "LeetCode 1195: Fizz Buzz Multithreaded", "url": "https://leetcode.com/problems/fizz-buzz-multithreaded/"}
+  ],
+  "hints": [
+    "Shared state: int turn = 0 (whose turn it is), a std::mutex and a std::condition_variable.",
+    "run: std::unique_lock lock(m); cv.wait(lock, [&] { return turn == id; });  Now it is your turn.",
+    "Simplest correct version: keep the lock while calling leg(), then turn = (turn + 1) % runners, unlock, notify.",
+    "Use notify_all(), not notify_one(): notify_one may wake a runner whose turn it is not; it goes back to sleep and the baton is lost forever.",
+    "With a single runner, (0 + 1) % 1 == 0: the turn comes straight back, nothing special to do."
+  ]
+}
